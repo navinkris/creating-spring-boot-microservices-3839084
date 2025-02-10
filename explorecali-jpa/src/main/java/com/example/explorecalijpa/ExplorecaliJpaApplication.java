@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +13,6 @@ import com.example.explorecalijpa.business.TourPackageService;
 import com.example.explorecalijpa.business.TourService;
 import com.example.explorecalijpa.model.Difficulty;
 import com.example.explorecalijpa.model.Region;
-import com.example.explorecalijpa.model.Tour;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,6 +37,22 @@ public class ExplorecaliJpaApplication implements CommandLineRunner {
         System.out.println("Persisted Packages = " + tourPackageService.total());
         createToursFromFile(TOUR_IMPORT_FILE);
         System.out.println("Persisted Tours = " + tourService.total());
+       
+        /********* CHALLENGES **********/
+        System.out.println("\n\nEasy Tours");
+        tourService.lookupByDifficulty(Difficulty.Easy).forEach(System.out::println);
+
+        System.out.println("\n\nBackpack Cali Tours");
+        tourService.lookupByPackage("BC").forEach(System.out::println);
+    }
+
+    /**
+     * Iterate through all of the tour packages, print the tour package name and
+     * for each tour package lookup all tours and print the name and
+     * description of the tour.
+     * 
+     */
+    private void printToursChallenge() {
     }
 
     /**
@@ -60,8 +74,7 @@ public class ExplorecaliJpaApplication implements CommandLineRunner {
      * Create tour entities from an external file
      */
     private void createToursFromFile(String fileToImport) throws IOException {
-         TourFromFile.read(fileToImport).forEach(t -> 
-            tourService.createTour(
+        TourFromFile.read(fileToImport).forEach(t -> tourService.createTour(
                 t.packageName(),
                 t.title(),
                 t.description(),
@@ -71,20 +84,19 @@ public class ExplorecaliJpaApplication implements CommandLineRunner {
                 t.bullets(),
                 t.keywords(),
                 Difficulty.valueOf(t.difficulty()),
-                Region.findByLabel(t.region())
-            )
-        );
+                Region.findByLabel(t.region())));
     }
-    
+
     /*
      * Helper to import ExploreCali.json
      */
     record TourFromFile(String packageName, String title, String description,
-            String blurb, Integer price, String length, String bullets, 
+            String blurb, Integer price, String length, String bullets,
             String keywords, String difficulty, String region) {
         static List<TourFromFile> read(String fileToImport) throws IOException {
-         return new ObjectMapper().readValue(new File(fileToImport), 
-            new TypeReference<List<TourFromFile>>() {});
+            return new ObjectMapper().readValue(new File(fileToImport),
+                    new TypeReference<List<TourFromFile>>() {
+                    });
         }
     }
 }

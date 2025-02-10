@@ -1,5 +1,8 @@
 package com.example.explorecalijpa.business;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.explorecalijpa.model.Difficulty;
@@ -27,6 +30,13 @@ public class TourService {
         .orElseThrow(() -> new RuntimeException("Tour Package not found for id:" + tourPackageName));
     return tourRepository.save(new Tour(title, description, blurb,
         price, duration, bullets, keywords, tourPackage, difficulty, region));
+
+  public List<Tour> lookupByDifficulty(Difficulty difficulty) {
+    return tourRepository.findByDifficulty(difficulty);
+  }
+
+  public List<Tour> lookupByPackage(String tourPackageCode) {
+    return tourRepository.findByTourPackageCode(tourPackageCode);
   }
 
   public long total() {
