@@ -30,7 +30,6 @@ public class TourService {
         .orElseThrow(() -> new RuntimeException("Tour Package not found for id:" + tourPackageName));
     return tourRepository.save(new Tour(title, description, blurb,
         price, duration, bullets, keywords, tourPackage, difficulty, region));
-  }
 
   public List<Tour> lookupByDifficulty(Difficulty difficulty) {
     return tourRepository.findByDifficulty(difficulty);

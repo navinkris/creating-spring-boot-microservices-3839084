@@ -53,7 +53,6 @@ public class ExplorecaliJpaApplication implements CommandLineRunner {
      * 
      */
     private void printToursChallenge() {
-
     }
 
     /**
